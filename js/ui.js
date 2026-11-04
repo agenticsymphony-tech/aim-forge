@@ -2,6 +2,7 @@ import { WEAPONS, PRIMARIES, SECONDARIES, MELEES, weaponRatings } from './weapon
 import { meleeRatings } from './knives.js';
 import { OPERATORS, operatorColors } from './avatar.js';
 import { MODES, DIFFICULTIES } from './modes.js';
+import { THEMES, MAP_IDS } from './maps.js';
 import { DEFAULTS } from './storage.js';
 import { fmtTime } from './hud.js';
 
@@ -19,6 +20,8 @@ const TIPS = [
   'Crouching tightens your spread and lowers recoil.',
   'Swapping to your sidearm is faster than reloading.',
   'Press 3 for your knife and F to inspect it — every blade has its own flip.',
+  'Six themed maps: pick one in the Play tab — every mode plays the same on all of them.',
+  'Press F to loop your inspect animation; press it again to stop.',
 ];
 
 const ACCENTS = ['#00e0ff', '#ff3b3b', '#ffb000', '#9cff57', '#c86bff', '#ff6bd5', '#ffffff'];
@@ -95,6 +98,16 @@ export class Menu {
       c.addEventListener('dblclick', () => this.g.startRun());
       list.appendChild(c);
     }
+    const maps = $('map-list');
+    for (const id of MAP_IDS) {
+      const t = THEMES[id];
+      const c = h('button', 'card map-card');
+      c.dataset.map = id;
+      c.innerHTML = `<div class="map-thumb" style="background-image:${t.thumb}"><img src="assets/maps/${id}.jpg" alt="" loading="lazy" onerror="this.remove()"></div><div class="mp-n">${t.name}</div><div class="mp-t">${t.tag}</div>`;
+      c.addEventListener('click', () => { this.p.session.map = id; this.save(); this.refreshPlay(); });
+      c.addEventListener('dblclick', () => this.g.startRun());
+      maps.appendChild(c);
+    }
     const seg = (el, items, key, fmt) => {
       for (const v of items) {
         const b = h('button', '', fmt(v)); b.dataset.v = v;
@@ -110,6 +123,7 @@ export class Menu {
   refreshPlay() {
     const s = this.p.session;
     for (const c of $('mode-list').children) c.classList.toggle('active', c.dataset.mode === s.mode);
+    for (const c of $('map-list').children) c.classList.toggle('active', c.dataset.map === (s.map || 'range'));
     for (const b of $('seg-diff').children) b.classList.toggle('active', b.dataset.v === s.difficulty);
     for (const b of $('seg-dur').children) b.classList.toggle('active', +b.dataset.v === s.duration);
     const timed = MODES[s.mode].timed;
@@ -342,7 +356,7 @@ export class Menu {
       return `<div class="tr"><span>${MODES[m]?.name ?? m}</span><span>${DIFFICULTIES[d]?.label ?? d} · ${dur}s</span><span>${WEAPONS[b.weapon]?.name ?? ''}</span><b>${b.score.toLocaleString()}</b></div>`;
     }).join('') : '<div class="tr muted">Play a timed mode to set a record.</div>';
     const hist = this.p.history;
-    $('career-history').innerHTML = hist.length ? hist.map(r => `<div class="tr"><span>${MODES[r.mode]?.name ?? r.mode}</span><span>${DIFFICULTIES[r.diff]?.label ?? r.diff} · ${r.dur}s</span><span>${r.acc}%</span><b>${r.score.toLocaleString()}</b></div>`).join('') : '<div class="tr muted">No sessions yet.</div>';
+    $('career-history').innerHTML = hist.length ? hist.map(r => `<div class="tr"><span>${MODES[r.mode]?.name ?? r.mode}</span><span>${THEMES[r.map]?.name ?? 'Training Facility'} · ${DIFFICULTIES[r.diff]?.label ?? r.diff}</span><span>${r.acc}%</span><b>${r.score.toLocaleString()}</b></div>`).join('') : '<div class="tr muted">No sessions yet.</div>';
     const btn = $('btn-reset');
     btn.onclick = () => {
       if (!confirm('Reset all career stats and personal bests?')) return;
@@ -369,7 +383,7 @@ export class Menu {
   }
 
   showResults(r) {
-    $('res-mode').textContent = `${r.mode.name} · ${r.diff.label}${r.timed ? '' : ' · Free'}`;
+    $('res-mode').textContent = `${r.mode.name} · ${r.diff.label} · ${r.map}${r.timed ? '' : ' · Free'}`;
     $('res-score').textContent = r.score.toLocaleString();
     $('res-best').classList.toggle('hidden', !r.isBest);
     const rows = [

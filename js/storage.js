@@ -18,7 +18,7 @@ export const DEFAULTS = {
   },
   loadout: { primary: 'ar', secondary: 'pistol', melee: 'butterfly' },
   operator: { preset: 'specter', name: 'Recruit', accent: null, armor: null },
-  session: { mode: 'gridshot', difficulty: 'normal', duration: 60 },
+  session: { mode: 'gridshot', difficulty: 'normal', duration: 60, map: 'range' },
   best: {},
   history: [],
   totals: { shots: 0, hits: 0, runs: 0, seconds: 0, kills: 0, headshots: 0 },

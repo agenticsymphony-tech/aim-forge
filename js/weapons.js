@@ -294,6 +294,19 @@ function buildArms(info) {
   left.add(cuffL);
   limb(le, le.clone().add(new THREE.Vector3(-0.08, -0.25, 0.2)), 0.04, MATS.sleeve, left);
   info.leftArm = left;
+  info.L = L.clone();
+  if (info.pump) {
+    // a shell held in the support hand while loading
+    const shell = new THREE.Group();
+    const hull = new THREE.Mesh(new THREE.CylinderGeometry(0.0095, 0.0095, 0.05, 12), new THREE.MeshStandardMaterial({ color: 0xc0242b, roughness: 0.5 }));
+    hull.rotation.x = Math.PI / 2; shell.add(hull);
+    const brass = new THREE.Mesh(new THREE.CylinderGeometry(0.0102, 0.0102, 0.014, 12), new THREE.MeshStandardMaterial({ color: 0xc9a14a, metalness: 1, roughness: 0.25 }));
+    brass.rotation.x = Math.PI / 2; brass.position.z = 0.028; shell.add(brass);
+    shell.position.copy(L).add(new THREE.Vector3(0.0, 0.035, -0.01));
+    shell.visible = false;
+    left.add(shell);
+    info.shell = shell;
+  }
   return arms;
 }
 
@@ -413,43 +426,55 @@ export class Viewmodel {
     // equip
     const eq = 1 - smooth(0, 1, s.equipT);
     // reload
-    let rTilt = 0, magDrop = 0, leftDown = 0;
+    // staged reload: tilt -> hand to mag -> mag out -> fresh mag in -> hand back -> rack
+    let rTilt = 0, hold = 0, out = 0, rack = 0, shellPush = 0, shellOn = false;
     if (s.reloadT != null) {
       const t = s.reloadT;
       if (d.shellReload) {
-        rTilt = 0.6;
-        const ph = (s.shellT ?? 0);
-        leftDown = bump(ph, 0, 0.3, 0.6, 1) * 0.5;
+        rTilt = 0.55; hold = 1;
+        const ph = s.shellT ?? 0;
+        shellPush = smooth(0.3, 0.72, ph);
+        shellOn = ph < 0.78;
       } else {
-        rTilt = bump(t, 0, 0.15, 0.82, 1);
-        magDrop = bump(t, 0.12, 0.3, 0.58, 0.75);
-        leftDown = bump(t, 0.2, 0.35, 0.65, 0.8);
+        rTilt = bump(t, 0, 0.14, 0.86, 1);
+        hold = bump(t, 0.1, 0.24, 0.72, 0.84);
+        out = bump(t, 0.26, 0.44, 0.5, 0.68);
+        rack = bump(t, 0.8, 0.85, 0.87, 0.95);
       }
     }
     // bolt / pump cycle
     let cyc = 0;
     if (s.cycleT != null) cyc = bump(s.cycleT, 0.15, 0.4, 0.55, 0.85);
+    if (c.bolt) cyc = Math.max(cyc, rack);
 
     const swayScale = lerp(1, 0.25, ads);
     // weapon inspect: turn the gun to show it off
     const ins = s.inspectT != null ? bump(s.inspectT, 0, 0.2, 0.8, 1) : 0;
     const insRoll = s.inspectT != null ? Math.sin(s.inspectT * Math.PI) : 0;
     c.holder.position.set(
-      px + bx + this.sway.x * 0.6 * swayScale,
-      py + by + idle - eq * 0.25 - rTilt * 0.05 + this.sway.y * 0.6 * swayScale,
-      pz + this.kick * d.kick * lerp(1, 0.6, ads) + ins * 0.1
+      px + bx + this.sway.x * 0.6 * swayScale - rTilt * 0.08,
+      py + by + idle - eq * 0.25 + rTilt * 0.06 + this.sway.y * 0.6 * swayScale,
+      pz + this.kick * d.kick * lerp(1, 0.6, ads) + ins * 0.1 + rack * 0.025 + rTilt * 0.05
     );
     c.holder.position.x -= ins * 0.12;
     c.holder.position.y += ins * 0.04;
     c.holder.rotation.set(
-      this.sway.y * swayScale + this.kick * 0.07 * lerp(1, 0.3, ads) + rTilt * 0.25 - eq * 0.7 + cyc * 0.1 + ins * 0.15,
-      this.sway.x * swayScale + this.kick * this.kickRot * 0.02 - ins * 0.9 + insRoll * ins * 0.3,
-      rTilt * 0.55 + eq * 0.3 - this.sway.x * 0.5 * swayScale + cyc * 0.15 + ins * 0.5
+      this.sway.y * swayScale + this.kick * 0.07 * lerp(1, 0.3, ads) + rTilt * 0.12 - eq * 0.7 + cyc * 0.1 + ins * 0.15,
+      this.sway.x * swayScale + this.kick * this.kickRot * 0.02 - ins * 0.9 + insRoll * ins * 0.3 + rTilt * 0.4,
+      -rTilt * 0.8 + eq * 0.3 - this.sway.x * 0.5 * swayScale + cyc * 0.15 + ins * 0.5 + rack * 0.14
     );
+    c.holder.rotation.x -= rack * 0.05;
 
-    if (c.mag && c.magBase) c.mag.position.y = c.magBase.y - magDrop * 0.3;
-    if (c.leftArm) c.leftArm.position.y = -leftDown * 0.12;
-    if (c.slide) c.slide.position.z = this.kick > 0.5 ? (this.kick - 0.5) * 0.06 : 0;
+    // the magazine leaves with the hand, tumbling, and the fresh one rides back up with it
+    const mx = -0.05 * out, my = -0.34 * out, mz = 0.05 * out;
+    if (c.mag && c.magBase) { c.mag.position.set(c.magBase.x + mx, c.magBase.y + my, c.magBase.z + mz); c.mag.rotation.z = -0.6 * out; }
+    if (c.leftArm && c.L) {
+      const target = c.magBase ? c.magBase : new THREE.Vector3(0, -0.05, -0.05);
+      const tx = target.x - c.L.x, ty = target.y - c.L.y - (c.magBase ? 0.07 : 0.02), tz = target.z - c.L.z + 0.015;
+      c.leftArm.position.set(tx * hold + mx, ty * hold + my - (d.shellReload ? 0.06 * (1 - shellPush) : 0), tz * hold + mz + (d.shellReload ? 0.02 * (1 - shellPush) : 0));
+    }
+    if (c.shell) c.shell.visible = shellOn;
+    if (c.slide) c.slide.position.z = Math.max(this.kick > 0.5 ? (this.kick - 0.5) * 0.06 : 0, rack * 0.04);
     if (c.bolt) { c.bolt.rotation.z = cyc * 1.1; c.bolt.position.z = 0.02 + cyc * 0.07; }
     if (c.pump) c.pump.position.z = -0.4 + cyc * 0.09;
 

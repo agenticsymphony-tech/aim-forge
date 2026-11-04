@@ -5,7 +5,7 @@
 # AIMFORGE
 
 **A first-person 3D aim trainer that runs in your browser. By Apurva.**
-Five guns, five animated knives, four operators, five training modes. Every model, texture and sound is generated in code, and there is nothing to install.
+Five guns, five animated knives, four operators, five training modes and **six themed maps**. Every model, texture and sound is generated in code, and there is nothing to install.
 
 [**⬇ Download (.zip)**](https://github.com/apurvamukherjee/Aim-Trainer-Game/archive/refs/heads/main.zip) &nbsp;·&nbsp;
 [**▶ Watch the trailer**](#trailer) &nbsp;·&nbsp;
@@ -38,6 +38,28 @@ A 66-second cinematic rendered frame by frame from the real game, with an **orig
 | 0:37 | Smooth Tracking with the K-7 Hornet |
 | 0:41 | Knife inspects: Balisong, Karambit, Dagger, Bowie, Tanto, then slash and stab |
 | 0:58 | Results and the end card |
+
+---
+
+## Maps
+
+Six themed maps share one arena footprint and cover layout, so scores compare fairly across them. Each map has its own sky (sun or moon, painted skyline), lighting, fog, floor and wall surfaces, cover pieces, props and weather. Pick one in the **Play** tab.
+
+| | | |
+| :---: | :---: | :---: |
+| ![Training Facility](docs/media/screenshots/map-range.jpg) **Training Facility**<br><sub>Night · floodlit range · starfield</sub> | ![Sunscorch](docs/media/screenshots/map-sunscorch.jpg) **Sunscorch**<br><sub>Desert outpost · low sunset sun · drifting dust · palms and adobe towers</sub> | ![Frostbite](docs/media/screenshots/map-frostbite.jpg) **Frostbite**<br><sub>Arctic station · snowfall · pines, drifts and a radar mast</sub> |
+| ![Neon District](docs/media/screenshots/map-neon.jpg) **Neon District**<br><sub>Rooftop city at night · rain · billboards, puddles, coloured light</sub> | ![Overgrowth](docs/media/screenshots/map-overgrowth.jpg) **Overgrowth**<br><sub>Jungle temple ruins · fireflies · vines, ferns and broken pillars</sub> | ![Rust Yard](docs/media/screenshots/map-rustyard.jpg) **Rust Yard**<br><sub>Container port at dusk · gantry cranes, stacked containers, oil drums</sub> |
+
+---
+
+## Animations
+
+![Staged rifle reload: reach, magazine out, fresh magazine, rack](docs/media/screenshots/reload-sequence.jpg)
+![Pistol magazine, shotgun shell loading, knife draw flourish](docs/media/screenshots/reload-knife.jpg)
+
+- **Staged reloads:** the gun rolls to show its underside, the support hand travels to the magazine and pulls it out (it tumbles away), then a fresh magazine rides up with the hand and the gun is racked. The pistol slide snaps back, the rifle jolts and the sniper cycles its bolt. The shotgun's support hand feeds a visible shell into the loading port for every round.
+- **Instant knife flourish:** switching to your knife (`3`, `Q` or the wheel) plays its signature flourish immediately. You can attack straight away, and the attack cancels it.
+- **Looping inspect:** `F` starts an inspect that loops until you press `F` again, fire, aim, reload or swap. It works for every gun and knife, and an on-screen hint shows while it's running.
 
 ---
 
@@ -115,7 +137,7 @@ Each gun has its own damage, headshot multiplier, fire rate, magazine, reload ti
 | **Ridgeback Bowie** | Rolled over to show both faces of the blade |
 | **Shinobi Tanto** | Flipped into reverse grip and back |
 
-`LMB` does an alternating slash, `RMB` a heavy stab. Knife hits register on bots, plates and targets, and you move faster with a knife out. In the Loadout tab, the display stand plays each knife's inspect on loop.
+Switching to the knife plays its flourish instantly, and `F` loops the inspect until you press it again. `LMB` does an alternating slash, `RMB` a heavy stab. Knife hits register on bots, plates and targets, and you move faster with a knife out. In the Loadout tab, the display stand plays each knife's inspect on loop.
 
 ### Operators
 **Specter** (Recon), **Ronin** (Assault), **Nova** (Support) and **Moss** (Marksman), each with a different helmet and gear. Set a callsign plus accent and armor colours. The accent colour also tints the UI, the arena neon and your first-person sleeves.
@@ -129,7 +151,7 @@ Each gun has its own damage, headshot multiplier, fire rate, magazine, reload ti
 | **Bot Duel** | Humanoid bots strafing side to side, with head hitboxes; tracks time-to-kill (Hard spawns two) |
 | **Free Range** | No timer: steel plates at 10/25/50 m, static dummies and a moving bot |
 
-Timed modes offer **Easy / Normal / Hard** (target size, speed and lifetime) and **30 / 60 / 90 s**.
+Timed modes offer **Easy / Normal / Hard** (target size, speed and lifetime) and **30 / 60 / 90 s**, and every mode can be played on any of the six maps.
 
 ### Settings and progress
 - CS-scale sensitivity (cm/360 at 800 DPI is shown), ADS multiplier, horizontal FOV, crosshair style (cross, cross + dot, dot, circle, T), colour and size, dynamic crosshair, hold or toggle ADS, auto-reload, FPS counter, graphics quality.
@@ -149,7 +171,7 @@ Timed modes offer **Easy / Normal / Hard** (target size, speed and lifetime) and
 | `R` | Reload |
 | `1` `2` `3` | Primary / secondary / knife |
 | `Q`, mouse wheel | Last weapon, cycle weapons |
-| `F` | Inspect |
+| `F` | Inspect: loops until pressed again |
 | `Esc` | Pause |
 
 ---
@@ -163,7 +185,8 @@ js/main.js        game loop, player controller, shooting, melee, game flow
 js/weapons.js     gun stats, procedural gun models, first-person viewmodel and animations
 js/knives.js      knife stats, models and signature inspect animations
 js/avatar.js      operator and training-bot character builder
-js/world.js       arena (procedural textures, cover, lights) and menu stage
+js/world.js       arena builder (walls, cover, branding) and menu stage
+js/maps.js        the six map themes: skies, surfaces, props, weather
 js/modes.js       training modes, targets, bots, difficulty
 js/effects.js     tracers, bullet holes, sparks, muzzle light
 js/hud.js         in-game HUD

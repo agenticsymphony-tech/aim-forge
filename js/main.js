@@ -5,6 +5,7 @@ import { WEAPONS, Viewmodel, setOperatorColors, buildWeaponModel } from './weapo
 import { buildAvatar, operatorColors, BOT_LOOK } from './avatar.js';
 import { KNIFE_LENGTH } from './knives.js';
 import { buildWorld, buildMenuStage, ARENA } from './world.js';
+import { THEMES } from './maps.js';
 import { Effects } from './effects.js';
 import { createMode, MODES, DIFFICULTIES } from './modes.js';
 import { Hud } from './hud.js';
@@ -103,15 +104,28 @@ class Game {
   accent() { return operatorColors(this.profile.operator).accent; }
 
   initWorld() {
-    this.scene = new THREE.Scene();
-    this.world = buildWorld(this.scene, { accent: this.accent(), quality: this.profile.settings.quality });
-    this.fx = new Effects(this.scene);
+    this.buildMap(this.profile.session.map || 'range');
     this.viewScene = new THREE.Scene();
     this.viewScene.add(new THREE.HemisphereLight(0xdfe8ff, 0x302820, 1.6));
     const vk = new THREE.DirectionalLight(0xffffff, 2.2); vk.position.set(1, 2, 1.5); this.viewScene.add(vk);
     const vr = new THREE.DirectionalLight(0x9fc0ff, 1.0); vr.position.set(-2, 0.5, -1); this.viewScene.add(vr);
     const vf = new THREE.DirectionalLight(0xffffff, 1.2); vf.position.set(-1, 0.6, 0.8); this.viewScene.add(vf);
     this.viewScene.environment = null;
+  }
+
+  // (re)build the world scene for a map theme, freeing the previous one's GPU resources
+  buildMap(map) {
+    if (this.scene) {
+      this.scene.traverse((o) => {
+        if (o.geometry) o.geometry.dispose();
+        const ms = o.material ? (Array.isArray(o.material) ? o.material : [o.material]) : [];
+        for (const m of ms) { for (const k of ['map', 'emissiveMap']) if (m[k]) m[k].dispose(); m.dispose(); }
+      });
+    }
+    this.scene = new THREE.Scene();
+    this.world = buildWorld(this.scene, { accent: this.accent(), quality: this.profile.settings.quality, map });
+    this.fx = new Effects(this.scene);
+    this.dynSolids = [];
   }
 
   initWeapons() {
@@ -271,6 +285,7 @@ class Game {
   toMenu() {
     this.state = 'menu';
     this.teardownRun();
+    this.renderer.toneMappingExposure = 1.05;
     this.hud.show(false);
     $('pause').classList.add('hidden');
     $('results').classList.add('hidden');
@@ -293,6 +308,9 @@ class Game {
     this.audio.unlock();
     this.teardownRun();
     this.session = { ...this.profile.session };
+    const map = this.session.map || 'range';
+    if (!this.world || this.world.map !== map) { this.buildMap(map); this.renderer.compile(this.scene, this.camera); }
+    this.renderer.toneMappingExposure = this.world.exposure;
     const p = this.player;
     p.pos.set(0, 0, 0); p.vel.set(0, 0, 0); p.yaw = 0; p.pitch = 0.04; p.grounded = true; p.crouch = 0;
     this.recoil.pitch = this.recoil.yaw = 0;
@@ -320,7 +338,7 @@ class Game {
     $('pause').classList.add('hidden');
     this.hud.show(true);
     this.hud.applyCrosshair(this.profile.settings);
-    $('hud-mode').textContent = `${MODES[this.session.mode].name} · ${DIFFICULTIES[this.session.difficulty].label}`;
+    $('hud-mode').textContent = `${MODES[this.session.mode].name} · ${THEMES[map].name}`;
     $('free-hint').classList.toggle('hidden', this.timed);
     this.updateFov(0);
     if (!this.locked) this.requestLock();
@@ -363,14 +381,14 @@ class Game {
     const isBest = timed && s.score > prevBest;
     if (timed) {
       if (isBest) this.profile.best[key] = { score: s.score, acc: +acc.toFixed(1), date: Date.now(), weapon: this.loadout.primary.def.id };
-      this.profile.history.unshift({ mode: this.session.mode, diff: this.session.difficulty, dur: this.session.duration, score: s.score, acc: +acc.toFixed(1), date: Date.now() });
+      this.profile.history.unshift({ mode: this.session.mode, diff: this.session.difficulty, dur: this.session.duration, map: this.world.map, score: s.score, acc: +acc.toFixed(1), date: Date.now() });
       this.profile.history = this.profile.history.slice(0, 15);
     }
     const T = this.profile.totals;
     T.shots += s.shots; T.hits += s.hits; T.runs += 1; T.seconds += Math.round(this.elapsed); T.kills += s.kills; T.headshots += s.headshots;
     saveProfile(this.profile);
     this.menu.showResults({
-      mode: MODES[this.session.mode], diff: DIFFICULTIES[this.session.difficulty], timed,
+      mode: MODES[this.session.mode], diff: DIFFICULTIES[this.session.difficulty], timed, map: this.world.theme.name,
       score: s.score, acc, shots: s.shots, hits: s.hits, headshots: s.headshots, bestStreak: s.bestStreak,
       extra: this.mode.extra(), isBest, prevBest, time: this.elapsed,
       hps: this.elapsed ? s.hits / this.elapsed : 0,
@@ -399,12 +417,18 @@ class Game {
     this.input.adsToggled = false;
     this.viewmodel.equip(this.weapon.def);
     this.audio.equip();
+    // knives come out with their signature flourish straight away (any attack cancels it)
+    if (this.weapon.def.melee) { this.weapon.equipT = 0.7; this.weapon.inspectT = 0; this.weapon.inspectFast = true; this.weapon.inspectLoop = false; }
   }
 
+  // F toggles a looping inspect; firing, aiming, reloading or swapping stops it
   startInspect() {
     const w = this.weapon;
-    if (w.reloading || w.swing || w.equipT < 1 || this.adsT > 0.1 || this.state === 'paused') return;
-    w.inspectT = 0;
+    if (this.state === 'paused') return;
+    if (w.inspectT != null && w.inspectLoop) { w.inspectT = null; w.inspectLoop = false; return; }
+    if (w.reloading || w.swing || this.adsT > 0.1) return;
+    w.equipT = 1;
+    w.inspectT = 0; w.inspectLoop = true; w.inspectFast = false;
     if (w.def.melee) this.audio.equip();
   }
 
@@ -457,11 +481,11 @@ class Game {
     const now = performance.now();
     const rmb = I.rmbAt > 0 && (I.rmbAt >= (this.prevTickAt || 0) - 1 || now - I.rmbAt < 200);
     if (pressed || I.fire) {
-      I.pressAt = 0; w.inspectT = null; w.alt = !w.alt;
+      I.pressAt = 0; w.inspectT = null; w.inspectLoop = false; w.alt = !w.alt;
       w.swing = { kind: 'slash', t: 0, dur: d.slash.rate, hitAt: 0.32, hitDone: false, alt: w.alt };
       this.audio.swoosh(false);
     } else if (rmb || I.adsHeld) {
-      I.rmbAt = 0; w.inspectT = null;
+      I.rmbAt = 0; w.inspectT = null; w.inspectLoop = false;
       w.swing = { kind: 'stab', t: 0, dur: d.stab.rate, hitAt: 0.48, hitDone: false };
       this.audio.swoosh(true);
     }
@@ -470,7 +494,7 @@ class Game {
   startReload() {
     const w = this.weapon;
     if (w.def.melee) return;
-    w.inspectT = null;
+    w.inspectT = null; w.inspectLoop = false;
     if (w.reloading || w.ammo >= w.def.mag || w.equipT < 1) return;
     w.reloading = true; w.reloadT = 0; w.shellT = 0; w.sfx = {};
     w.cycleT = null;
@@ -562,7 +586,11 @@ class Game {
     const now = performance.now();
     const pressed = I.pressAt > 0 && (I.pressAt >= (this.prevTickAt || 0) || now - I.pressAt < 200);
     w.equipT = Math.min(1, w.equipT + dt / d.equip);
-    if (w.inspectT != null) { w.inspectT += dt / (d.inspectDur || 2.2); if (w.inspectT >= 1 || this.adsT > 0.3) w.inspectT = null; }
+    if (w.inspectT != null) {
+      w.inspectT += dt / ((d.inspectDur || 2.2) / (w.inspectFast ? 1.4 : 1));
+      if (this.adsT > 0.3) { w.inspectT = null; w.inspectLoop = false; }
+      else if (w.inspectT >= 1) { if (w.inspectLoop) w.inspectT -= 1; else { w.inspectT = null; w.inspectFast = false; } }
+    }
     if (d.melee) { this.updateMelee(dt, canFire, pressed); this.prevTickAt = now; return; }
     this.prevTickAt = now;
     w.bloom = damp(w.bloom, 0, 4, dt);
@@ -602,7 +630,7 @@ class Game {
         return;
       }
       I.pressAt = 0;
-      w.inspectT = null;
+      w.inspectT = null; w.inspectLoop = false;
       this.fire();
       if (w.ammo === 0 && this.profile.settings.autoReload) setTimeout(() => { if (this.weapon === w && w.ammo === 0) this.startReload(); }, 250);
     }
@@ -743,6 +771,7 @@ class Game {
     const scoped = !!d.scope && this.adsT > 0.9;
     this.hud.setScope(scoped);
     this.hud.cross.classList.toggle('ads', !scoped && this.adsT > 0.75);
+    $('inspect-hint').classList.toggle('hidden', !(w.inspectT != null && w.inspectLoop));
 
     if (this.state === 'countdown') {
       this.countT -= dt;
@@ -769,6 +798,7 @@ class Game {
       this.mode.update(dt);
     }
     this.fx.update(dt);
+    this.world.update(dt, this.camera.position, this.clock);
 
     // viewmodel
     this.viewmodel.update({

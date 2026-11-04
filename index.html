@@ -74,6 +74,8 @@
       <section class="panel" data-panel="play">
         <h2 class="panel-title">Select Training</h2>
         <div id="mode-list" class="mode-list"></div>
+        <div class="label">Map</div>
+        <div id="map-list" class="map-list"></div>
         <div class="row-2">
           <div><div class="label">Difficulty</div><div class="seg" id="seg-diff"></div></div>
           <div><div class="label">Duration</div><div class="seg" id="seg-dur"></div></div>
@@ -132,7 +134,7 @@
 
     <footer class="menu-foot">
       <span><kbd>WASD</kbd> move</span><span><kbd>Mouse</kbd> aim</span><span><kbd>LMB</kbd> fire</span><span><kbd>RMB</kbd> ADS</span>
-      <span><kbd>R</kbd> reload</span><span><kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>/<kbd>Q</kbd> swap</span><span><kbd>F</kbd> inspect</span><span><kbd>Shift</kbd> sprint</span><span><kbd>Ctrl</kbd> crouch</span><span><kbd>Space</kbd> jump</span><span><kbd>Esc</kbd> pause</span>
+      <span><kbd>R</kbd> reload</span><span><kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>/<kbd>Q</kbd> swap</span><span><kbd>F</kbd> inspect (loop)</span><span><kbd>Shift</kbd> sprint</span><span><kbd>Ctrl</kbd> crouch</span><span><kbd>Space</kbd> jump</span><span><kbd>Esc</kbd> pause</span>
     </footer>
     <div class="drag-hint">◀ drag to rotate ▶</div>
     <div id="touch-warn" class="touch-warn hidden">AIMFORGE is built for mouse &amp; keyboard. Connect a mouse for the full experience.</div>
@@ -145,6 +147,7 @@
     <div id="scope" class="hidden"><div class="scope-ring"></div><div class="scope-h"></div><div class="scope-v"></div><div class="scope-dot"></div></div>
     <div id="dmg-layer"></div>
     <div id="center-msg"></div>
+    <div id="inspect-hint" class="inspect-hint hidden">INSPECTING · <kbd>F</kbd> TO STOP</div>
     <div id="countdown" class="hidden"></div>
     <div id="score-pop"></div>
 
@@ -171,7 +174,7 @@
       <div id="weapon-class" class="w-class"></div>
       <div id="reload-bar" class="reload-bar hidden"><div></div></div>
       <div id="reload-hint" class="reload-hint hidden">PRESS <kbd>R</kbd> TO RELOAD</div>
-      <div id="melee-hint" class="melee-hint hidden"><kbd>LMB</kbd> slash · <kbd>RMB</kbd> stab · <kbd>F</kbd> inspect</div>
+      <div id="melee-hint" class="melee-hint hidden"><kbd>LMB</kbd> slash · <kbd>RMB</kbd> stab · <kbd>F</kbd> loop inspect</div>
     </div>
     <div id="fps" class="fps"></div>
   </div>

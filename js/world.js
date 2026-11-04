@@ -1,19 +1,8 @@
 import * as THREE from 'three';
 import { box, canvasTex, speckle } from './util.js';
+import { THEMES, makeWeather } from './maps.js';
 
 export const ARENA = { minX: -18, maxX: 18, minZ: -72, maxZ: 9, wallH: 7 };
-
-function floorTex() {
-  return canvasTex(512, 512, (x, w, h) => {
-    x.fillStyle = '#1c1f24'; x.fillRect(0, 0, w, h);
-    speckle(x, w, h, 6000, 0.12, true);
-    speckle(x, w, h, 4000, 0.25);
-    x.strokeStyle = 'rgba(0,0,0,0.6)'; x.lineWidth = 6; x.strokeRect(0, 0, w, h);
-    x.strokeStyle = 'rgba(255,255,255,0.07)'; x.lineWidth = 2; x.strokeRect(4, 4, w - 8, h - 8);
-    x.strokeStyle = 'rgba(255,255,255,0.04)'; x.lineWidth = 1;
-    x.beginPath(); x.moveTo(w / 2, 0); x.lineTo(w / 2, h); x.moveTo(0, h / 2); x.lineTo(w, h / 2); x.stroke();
-  }, { repeat: [18, 40.5] });
-}
 
 function concreteTex(rx, ry) {
   return canvasTex(512, 512, (x, w, h) => {
@@ -64,39 +53,31 @@ export function textPlane(text, { w = 4, h = 1, color = '#ffffff', font = 'bold 
   return m;
 }
 
-function skyDome() {
-  const tex = canvasTex(16, 512, (x, w, h) => {
-    const g = x.createLinearGradient(0, 0, 0, h);
-    g.addColorStop(0, '#05070c');
-    g.addColorStop(0.35, '#0e1622');
-    g.addColorStop(0.5, '#2a2f3a');
-    g.addColorStop(0.53, '#3b2a24');
-    g.addColorStop(1, '#0b0c10');
-    x.fillStyle = g; x.fillRect(0, 0, w, h);
-  });
-  const m = new THREE.Mesh(new THREE.SphereGeometry(400, 32, 16), new THREE.MeshBasicMaterial({ map: tex, side: THREE.BackSide, fog: false, depthWrite: false }));
-  return m;
-}
-
 /**
- * Indoor/outdoor shooting range. Returns raycast solids and AABB colliders.
+ * Builds the arena for a map theme. All themes share the footprint and the
+ * cover layout; sky, light, fog, surfaces, props and weather come from the theme.
+ * Returns raycast solids and AABB colliders.
  */
-export function buildWorld(scene, { accent = '#ff3b3b', quality = 'high' } = {}) {
+export function buildWorld(scene, { accent = '#ff3b3b', quality = 'high', map = 'range' } = {}) {
+  const theme = THEMES[map] || THEMES.range;
   const solids = [];
   const colliders = [];
+  const extra = [];
   const group = new THREE.Group();
   scene.add(group);
-  scene.fog = new THREE.Fog(0x0d1118, 60, 160);
-  scene.add(skyDome());
+  scene.fog = new THREE.Fog(...theme.fog);
+  scene.background = new THREE.Color(theme.fog[0]);
+  const sky = new THREE.Mesh(new THREE.SphereGeometry(400, 48, 24), new THREE.MeshBasicMaterial({ map: theme.sky(), side: THREE.BackSide, fog: false, depthWrite: false }));
+  scene.add(sky);
 
-  const hemi = new THREE.HemisphereLight(0xbcd4ff, 0x2a2018, 0.9);
+  const hemi = new THREE.HemisphereLight(...theme.hemi);
   scene.add(hemi);
-  const sun = new THREE.DirectionalLight(0xfff1dc, 2.2);
-  sun.position.set(-20, 40, 15);
+  const sun = new THREE.DirectionalLight(theme.sun[0], theme.sun[1]);
+  sun.position.set(...theme.sun[2]);
   sun.target.position.set(0, 0, -30);
   sun.castShadow = quality === 'high';
   sun.shadow.mapSize.set(2048, 2048);
-  Object.assign(sun.shadow.camera, { left: -45, right: 45, top: 50, bottom: -50, near: 1, far: 120 });
+  Object.assign(sun.shadow.camera, { left: -45, right: 45, top: 50, bottom: -50, near: 1, far: 220 });
   sun.shadow.bias = -0.0005;
   sun.shadow.normalBias = 0.03;
   scene.add(sun, sun.target);
@@ -104,17 +85,17 @@ export function buildWorld(scene, { accent = '#ff3b3b', quality = 'high' } = {})
   const W = ARENA.maxX - ARENA.minX;
   const L = ARENA.maxZ - ARENA.minZ;
   const cz = (ARENA.maxZ + ARENA.minZ) / 2;
+  const accentColor = theme.trim === 'accent' ? accent : null;
 
   // floor
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, L), new THREE.MeshStandardMaterial({ map: floorTex(), roughness: 0.85, metalness: 0.1 }));
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, L), new THREE.MeshStandardMaterial({ map: theme.floor.tex(), roughness: theme.floor.rough, metalness: theme.floor.metal }));
   floor.rotation.x = -Math.PI / 2; floor.position.set(0, 0, cz); floor.receiveShadow = true;
   group.add(floor); solids.push(floor);
-  // outer ground
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.MeshStandardMaterial({ color: 0x15171b, roughness: 1 }));
-  ground.rotation.x = -Math.PI / 2; ground.position.y = -0.02; group.add(ground);
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(800, 800), new THREE.MeshStandardMaterial({ color: theme.ground, roughness: 1 }));
+  ground.rotation.x = -Math.PI / 2; ground.position.y = -0.02; ground.receiveShadow = true; group.add(ground);
 
   // walls
-  const wallMat = (rx, ry) => new THREE.MeshStandardMaterial({ map: concreteTex(rx, ry), roughness: 0.9 });
+  const wallMat = (rx, ry) => new THREE.MeshStandardMaterial({ map: theme.wall.tex === 'concrete' ? concreteTex(rx, ry) : theme.wall.tex(rx, ry), roughness: 0.9 });
   const H = ARENA.wallH;
   const walls = [
     [1, H, L, ARENA.minX - 0.5, H / 2, cz, L / 4, H / 4],
@@ -126,20 +107,23 @@ export function buildWorld(scene, { accent = '#ff3b3b', quality = 'high' } = {})
     const m = box(w, h, d, wallMat(rx, ry), x, y, z, group);
     solids.push(m);
   }
-  // neon trims
-  const neon = new THREE.MeshBasicMaterial({ color: accent, toneMapped: false });
+  // trims (neon on some maps, wooden beams / none on others)
+  const trimDef = theme.trim === 'accent' ? { color: accent, emissive: true } : theme.trim;
+  const neon = trimDef && trimDef.emissive ? new THREE.MeshBasicMaterial({ color: trimDef.color, toneMapped: false }) : new THREE.MeshStandardMaterial({ color: trimDef ? trimDef.color : 0x000000, roughness: 0.8 });
   const trims = [];
-  for (const sx of [ARENA.minX + 0.02, ARENA.maxX - 0.02]) {
-    const t1 = box(0.06, 0.08, L, neon, sx, H - 0.4, cz, group); t1.castShadow = false;
-    const t2 = box(0.06, 0.05, L, neon, sx, 0.15, cz, group); t2.castShadow = false;
-    trims.push(t1, t2);
+  if (trimDef) {
+    for (const sx of [ARENA.minX + 0.02, ARENA.maxX - 0.02]) {
+      const t1 = box(0.06, trimDef.emissive ? 0.08 : 0.3, L, neon, sx, H - 0.4, cz, group); t1.castShadow = false;
+      const t2 = box(0.06, trimDef.emissive ? 0.05 : 0.2, L, theme.trim2 ? new THREE.MeshBasicMaterial({ color: theme.trim2, toneMapped: false }) : neon, sx, 0.15, cz, group); t2.castShadow = false;
+      trims.push(t1, t2);
+    }
+    const backTrim = box(W, 0.1, 0.06, neon, 0, H + 2.4, ARENA.minZ + 0.02, group); backTrim.castShadow = false; trims.push(backTrim);
   }
-  const backTrim = box(W, 0.1, 0.06, neon, 0, H + 2.4, ARENA.minZ + 0.02, group); backTrim.castShadow = false; trims.push(backTrim);
+  const glowCol = trimDef && trimDef.emissive ? '#' + new THREE.Color(trimDef.color).getHexString() : '#ff2b3d';
 
   // back wall branding
-  const logo = textPlane('AIMFORGE', { w: 22, h: 4, color: '#f3f5f8', glow: accent, font: '800 168px "Oxanium", "Rajdhani", sans-serif' });
+  const logo = textPlane('AIMFORGE', { w: 22, h: 4, color: '#f3f5f8', glow: glowCol, font: '800 168px "Oxanium", "Rajdhani", sans-serif' });
   logo.position.set(0, 6.4, ARENA.minZ + 0.03); group.add(logo);
-  // brand badge either side of the wordmark
   const markTex = new THREE.TextureLoader().load('assets/logo/aimforge-mark.svg');
   markTex.colorSpace = THREE.SRGBColorSpace;
   markTex.anisotropy = 8;
@@ -149,7 +133,7 @@ export function buildWorld(scene, { accent = '#ff3b3b', quality = 'high' } = {})
     badge.position.set(x, 6.2, ARENA.minZ + 0.04);
     group.add(badge);
   }
-  const sub = textPlane('TRAINING FACILITY  ·  RANGE 01', { w: 14, h: 1, color: accent, font: '600 70px "Oxanium", "Rajdhani", sans-serif' });
+  const sub = textPlane(theme.sub, { w: 14, h: 1, color: glowCol, font: '600 70px "Oxanium", "Rajdhani", sans-serif' });
   sub.position.set(0, 4.1, ARENA.minZ + 0.03); group.add(sub);
 
   // distance markers
@@ -162,60 +146,87 @@ export function buildWorld(scene, { accent = '#ff3b3b', quality = 'high' } = {})
     }
   }
   // spawn pad
-  const pad = new THREE.Mesh(new THREE.RingGeometry(1.1, 1.25, 48), new THREE.MeshBasicMaterial({ color: accent, transparent: true, opacity: 0.55, toneMapped: false }));
+  const pad = new THREE.Mesh(new THREE.RingGeometry(1.1, 1.25, 48), new THREE.MeshBasicMaterial({ color: accentColor || glowCol, transparent: true, opacity: 0.55, toneMapped: false }));
   pad.rotation.x = -Math.PI / 2; pad.position.set(0, 0.015, 0); group.add(pad);
   const startLine = new THREE.Mesh(new THREE.PlaneGeometry(W, 0.25), new THREE.MeshBasicMaterial({ map: metalPanelTex(), transparent: true }));
   startLine.rotation.x = -Math.PI / 2; startLine.position.set(0, 0.013, -2.2); group.add(startLine);
 
-  // cover: crates & barriers
-  const crateMat = new THREE.MeshStandardMaterial({ map: crateTex(), roughness: 0.8 });
-  const panelMat = new THREE.MeshStandardMaterial({ map: metalPanelTex(), roughness: 0.6, metalness: 0.5 });
-  const concrete = wallMat(1, 0.5);
+  // cover: same layout on every map, themed materials
+  const cov = theme.cover || {};
+  const pick = (v, fallback) => (typeof v === 'function' ? v() : v === 'concrete' ? wallMat(1, 0.5) : v === 'stone' ? new THREE.MeshStandardMaterial({ map: theme.wall.tex(1, 0.5), roughness: 0.95 }) : v === 'wood' || !v ? fallback() : fallback());
+  const crateMat = pick(cov.crate, () => new THREE.MeshStandardMaterial({ map: crateTex(), roughness: 0.8 }));
+  const barrierMat = pick(cov.barrier, () => wallMat(1, 0.5));
+  const capMat = new THREE.MeshStandardMaterial({ color: 0xf2f6fa, roughness: 0.9 });
   const addSolid = (w, h, d, mat, x, y, z, ry = 0) => {
     const m = box(w, h, d, mat, x, y, z, group); m.rotation.y = ry;
     solids.push(m);
     m.updateMatrixWorld();
     colliders.push(new THREE.Box3().setFromObject(m));
+    if (cov.snowCap) { const c = box(w * 1.02, 0.12, d * 1.02, capMat, x, y + h / 2 + 0.06, z, group); c.rotation.y = ry; }
     return m;
   };
+  // seeded so every visit to a map has the same layout
+  let seed = 7;
+  const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
   const crateStacks = [[-12.5, -18], [12, -27], [-10, -39], [14, -46], [-14.5, -55], [6, -60], [-4, -33]];
   for (const [x, z] of crateStacks) {
-    addSolid(1.6, 1.6, 1.6, crateMat, x, 0.8, z, Math.random() * 0.3);
-    if (Math.random() > 0.4) addSolid(1.2, 1.2, 1.2, crateMat, x + 0.1, 2.2, z - 0.1, Math.random());
-    if (Math.random() > 0.5) addSolid(1.2, 1.2, 1.2, crateMat, x + 1.6, 0.6, z + 0.3, Math.random());
+    addSolid(1.6, 1.6, 1.6, crateMat, x, 0.8, z, rnd() * 0.3);
+    if (rnd() > 0.4) addSolid(1.2, 1.2, 1.2, crateMat, x + 0.1, 2.2, z - 0.1, rnd());
+    if (rnd() > 0.5) addSolid(1.2, 1.2, 1.2, crateMat, x + 1.6, 0.6, z + 0.3, rnd());
   }
-  for (const [x, z] of [[-6, -14], [7, -21], [0, -44], [-15, -30], [15, -36]]) addSolid(2.8, 1.1, 0.5, concrete, x, 0.55, z);
-  // side containers
-  for (const [x, z] of [[-16.2, -8], [16.2, -64]]) {
-    const c = addSolid(3, 3, 6.5, panelMat, x, 1.5, z);
-    c.material = new THREE.MeshStandardMaterial({ color: x < 0 ? 0x234a6b : 0x6b2a23, roughness: 0.6, metalness: 0.4 });
-  }
+  for (const [x, z] of [[-6, -14], [7, -21], [0, -44], [-15, -30], [15, -36]]) addSolid(2.8, 1.1, 0.5, barrierMat, x, 0.55, z);
+  const contCols = cov.container || [0x234a6b, 0x6b2a23];
+  [[-16.2, -8], [16.2, -64]].forEach(([x, z], i) => {
+    addSolid(3, 3, 6.5, new THREE.MeshStandardMaterial({ map: TEX_ribbed(contCols[i]), roughness: 0.6, metalness: 0.4 }), x, 1.5, z);
+  });
 
   // flood light poles
-  const poleMat = new THREE.MeshStandardMaterial({ color: 0x22262c, metalness: 0.7, roughness: 0.4 });
-  const lampMat = new THREE.MeshBasicMaterial({ color: 0xfff6e0, toneMapped: false });
-  for (const z of [-10, -35, -60]) {
-    for (const sx of [-1, 1]) {
-      const x = sx * (ARENA.maxX - 0.6);
-      box(0.25, H + 4, 0.25, poleMat, x, (H + 4) / 2, z, group);
-      const head = box(1.6, 0.25, 0.6, poleMat, x - sx * 0.6, H + 4, z, group);
-      head.rotation.z = sx * 0.3;
-      const lamp = box(1.4, 0.05, 0.45, lampMat, x - sx * 0.6, H + 3.86, z, group); lamp.rotation.z = sx * 0.3; lamp.castShadow = false;
+  if (theme.poles) {
+    const poleMat = new THREE.MeshStandardMaterial({ color: 0x22262c, metalness: 0.7, roughness: 0.4 });
+    const lampMat = new THREE.MeshBasicMaterial({ color: 0xfff6e0, toneMapped: false });
+    for (const z of [-10, -35, -60]) {
+      for (const sx of [-1, 1]) {
+        const x = sx * (ARENA.maxX - 0.6);
+        box(0.25, H + 4, 0.25, poleMat, x, (H + 4) / 2, z, group);
+        const head = box(1.6, 0.25, 0.6, poleMat, x - sx * 0.6, H + 4, z, group);
+        head.rotation.z = sx * 0.3;
+        const lamp = box(1.4, 0.05, 0.45, lampMat, x - sx * 0.6, H + 3.86, z, group); lamp.rotation.z = sx * 0.3; lamp.castShadow = false;
+      }
     }
-  }
-  if (quality === 'high') {
-    for (const z of [-12, -40]) {
-      const p = new THREE.PointLight(0xffe7c4, 30, 40, 1.6);
-      p.position.set(0, H + 2, z);
-      scene.add(p);
+    if (quality === 'high') {
+      for (const z of [-12, -40]) {
+        const p = new THREE.PointLight(theme.lamps || 0xffe7c4, 30, 40, 1.6);
+        p.position.set(0, H + 2, z);
+        scene.add(p); extra.push(p);
+      }
     }
   }
 
+  // themed props (decor is shootable but not walkable-into unless added as a collider)
+  const deco = new THREE.Group(); group.add(deco);
+  if (theme.deco) theme.deco({ g: deco, scene, quality, extra, A: ARENA, addSolidMesh: (m) => solids.push(m) });
+  deco.traverse(o => { if (o.isMesh) { o.receiveShadow = true; if (o.castShadow !== false) o.castShadow = true; } });
+
+  const weather = makeWeather(theme.weather, quality);
+  if (weather) scene.add(weather.obj);
+
   return {
-    solids, colliders, group, trims, neon,
+    solids, colliders, group, trims, neon, theme, map,
+    exposure: theme.exposure || 1,
     spawn: { pos: new THREE.Vector3(0, 0, 0), yaw: 0 },
-    setAccent(c) { neon.color.set(c); pad.material.color.set(c); },
+    setAccent(c) { if (theme.trim === 'accent') { neon.color.set(c); pad.material.color.set(c); } },
+    update(dt, camPos, t) { if (weather) weather.update(dt, camPos, t); },
   };
+}
+
+function TEX_ribbed(color) {
+  const c = '#' + new THREE.Color(color).getHexString();
+  return canvasTex(256, 256, (x, w, h) => {
+    x.fillStyle = c; x.fillRect(0, 0, w, h);
+    for (let i = 0; i < w; i += 12) { x.fillStyle = 'rgba(0,0,0,.25)'; x.fillRect(i, 0, 4, h); x.fillStyle = 'rgba(255,255,255,.08)'; x.fillRect(i + 5, 0, 3, h); }
+    speckle(x, w, h, 2500, 0.25);
+    x.strokeStyle = 'rgba(0,0,0,.5)'; x.lineWidth = 10; x.strokeRect(0, 0, w, h);
+  });
 }
 
 // The 3D stage shown behind the main menu
