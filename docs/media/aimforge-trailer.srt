@@ -64,4 +64,4 @@ Results, personal bests & career stats
 
 17
 00:01:03,467 --> 00:01:06,067
-AIMFORGE — PLAY IN YOUR BROWSER  ·  github.com/apurvamukherjee/Aim-Trainer-Game
+AIMFORGE — PLAY IN YOUR BROWSER  ·  github.com/apurvamukherjee/aim-forge

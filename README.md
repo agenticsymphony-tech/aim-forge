@@ -7,11 +7,11 @@
 **A first-person 3D aim trainer that runs in your browser. By Apurva.**
 Five guns, five animated knives, four operators, five training modes and **six themed maps**. Every model, texture and sound is generated in code, and there is nothing to install.
 
-[**⬇ Download (.zip)**](https://github.com/apurvamukherjee/Aim-Trainer-Game/archive/refs/heads/main.zip) &nbsp;·&nbsp;
+[**⬇ Download (.zip)**](https://github.com/apurvamukherjee/aim-forge/archive/refs/heads/main.zip) &nbsp;·&nbsp;
 [**▶ Watch the trailer**](#trailer) &nbsp;·&nbsp;
 [Run it locally](#run-it) &nbsp;·&nbsp;
 [Controls](#controls) &nbsp;·&nbsp;
-[▶ Play online](https://apurvamukherjee.github.io/Aim-Trainer-Game/)
+[▶ Play online](https://apurvamukherjee.github.io/aim-forge/)
 
 <a href="docs/media/aimforge-trailer.mp4"><img src="docs/media/aimforge-trailer.gif" alt="AIMFORGE trailer: gameplay highlights" width="720"></a>
 
@@ -27,7 +27,7 @@ A 66-second cinematic rendered frame by frame from the real game, with an **orig
 
 | | |
 | --- | --- |
-| ▶ **Watch / download** | [aimforge-trailer.mp4](docs/media/aimforge-trailer.mp4) (1280×720, H.264 + AAC, 8 MB) · [direct download](https://github.com/apurvamukherjee/Aim-Trainer-Game/raw/main/docs/media/aimforge-trailer.mp4) |
+| ▶ **Watch / download** | [aimforge-trailer.mp4](docs/media/aimforge-trailer.mp4) (1280×720, H.264 + AAC, 8 MB) · [direct download](https://github.com/apurvamukherjee/aim-forge/raw/main/docs/media/aimforge-trailer.mp4) |
 | 0:00 | Loading screen |
 | 0:01 | Main menu: operator on the 3D stage |
 | 0:05 | Operators: Ronin, Nova, Moss, Specter |
@@ -91,7 +91,7 @@ Six themed maps share one arena footprint and cover layout, so scores compare fa
 
 AIMFORGE is a static site. It uses ES modules, so it must be **served over HTTP**: double-clicking `index.html` won't work.
 
-1. [Download the zip](https://github.com/apurvamukherjee/Aim-Trainer-Game/archive/refs/heads/main.zip) and unzip it, or clone the repo.
+1. [Download the zip](https://github.com/apurvamukherjee/aim-forge/archive/refs/heads/main.zip) and unzip it, or clone the repo.
 2. Start any static server in the folder:
 
    ```bash
