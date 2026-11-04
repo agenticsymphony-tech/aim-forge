@@ -1,0 +1,67 @@
+1
+00:00:00,300 --> 00:00:01,483
+Everything — arena, guns, operators, sound — is generated in code
+
+2
+00:00:01,833 --> 00:00:05,533
+Your operator, live on a 3D stage
+
+3
+00:00:05,533 --> 00:00:10,733
+4 operators  ·  custom callsign, accent & armor colours
+
+4
+00:00:10,733 --> 00:00:14,133
+5 guns, each with its own recoil, spread, zoom & reload
+
+5
+00:00:14,133 --> 00:00:20,133
+5 knives, each with a signature inspect animation
+
+6
+00:00:20,133 --> 00:00:26,833
+GRIDSHOT  ·  three targets, always — speed and streaks
+
+7
+00:00:26,833 --> 00:00:32,833
+BOT DUEL  ·  strafing bots, headshots hit harder
+
+8
+00:00:32,833 --> 00:00:37,833
+REFLEX FLICK  ·  LR-50 Longbow, 4.5× scope
+
+9
+00:00:37,833 --> 00:00:41,333
+SMOOTH TRACKING  ·  scored by time on target
+
+10
+00:00:41,667 --> 00:00:44,767
+[F] INSPECT  Moth Balisong — fan flips
+
+11
+00:00:44,767 --> 00:00:47,667
+[F] INSPECT  Talon Karambit — ring spin
+
+12
+00:00:47,667 --> 00:00:50,117
+[F] INSPECT  Kestrel Dagger — toss & catch
+
+13
+00:00:50,117 --> 00:00:53,067
+[F] INSPECT  Ridgeback Bowie — blade roll
+
+14
+00:00:53,067 --> 00:00:55,767
+[F] INSPECT  Shinobi Tanto — reverse-grip flip
+
+15
+00:00:55,767 --> 00:00:58,467
+LMB slash  ·  RMB heavy stab
+
+16
+00:00:58,467 --> 00:01:03,367
+Results, personal bests & career stats
+
+17
+00:01:03,467 --> 00:01:06,067
+AIMFORGE — PLAY IN YOUR BROWSER  ·  github.com/apurvamukherjee/Aim-Trainer-Game

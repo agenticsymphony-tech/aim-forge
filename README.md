@@ -6,7 +6,7 @@
 Five guns, five animated knives, four operators, five training modes. Every model, texture and sound is generated in code: no asset downloads, no install.
 
 [**⬇ Download (.zip)**](https://github.com/apurvamukherjee/Aim-Trainer-Game/archive/refs/heads/main.zip) &nbsp;·&nbsp;
-[**▶ Watch the trailer (MP4)**](docs/media/aimforge-trailer.mp4) &nbsp;·&nbsp;
+[**▶ Watch the trailer**](#trailer) &nbsp;·&nbsp;
 [Run it locally](#run-it) &nbsp;·&nbsp;
 [Controls](#controls)
 
@@ -18,27 +18,47 @@ Five guns, five animated knives, four operators, five training modes. Every mode
 
 ---
 
+## Trailer
+
+A 66-second cinematic rendered frame by frame from the real game, with an **original synthwave soundtrack** (synthesized in code for this project) and **subtitles**. The subtitles are burned in, and there's also a selectable English track plus a separate [`.srt`](docs/media/aimforge-trailer.srt).
+
+| | |
+| --- | --- |
+| ▶ **Watch / download** | [aimforge-trailer.mp4](docs/media/aimforge-trailer.mp4) (1280×720, H.264 + AAC, 8 MB) · [direct download](https://github.com/apurvamukherjee/Aim-Trainer-Game/raw/main/docs/media/aimforge-trailer.mp4) |
+| 0:00 | Loading screen |
+| 0:01 | Main menu: operator on the 3D stage |
+| 0:05 | Operators: Ronin, Nova, Moss, Specter |
+| 0:10 | Loadout: guns, then knives on the display stand |
+| 0:20 | Gridshot with the VK-4 Vanguard |
+| 0:26 | Bot Duel (Hard): headshots and kill feed |
+| 0:32 | Reflex Flick through the LR-50 scope |
+| 0:37 | Smooth Tracking with the K-7 Hornet |
+| 0:41 | Knife inspects: Balisong, Karambit, Dagger, Bowie, Tanto, then slash and stab |
+| 0:58 | Results and the end card |
+
+---
+
 ## Screenshots
 
 | Main menu | Loadout |
 | :---: | :---: |
-| ![Main menu with the operator on a 3D stage](docs/media/screenshots/menu.png) | ![Loadout tab with the LR-50 Longbow on the display stand](docs/media/screenshots/loadout.png) |
+| ![Main menu with the operator on a 3D stage](docs/media/screenshots/menu.jpg) | ![Loadout tab with the LR-50 Longbow on the display stand](docs/media/screenshots/loadout.jpg) |
 | **Operators** | **Knife showcase** |
-| ![Operator tab with Ronin selected; the accent colour retints the UI](docs/media/screenshots/operator.png) | ![Butterfly knife on the display stand mid-flip](docs/media/screenshots/knife-showcase.png) |
+| ![Operator tab with Ronin selected; the accent colour retints the UI](docs/media/screenshots/operator.jpg) | ![Butterfly knife on the display stand mid-flip](docs/media/screenshots/knife-showcase.jpg) |
 
 | Gridshot | Bot Duel |
 | :---: | :---: |
-| ![Gridshot gameplay with the VK-4 Vanguard](docs/media/screenshots/gridshot.png) | ![Bot Duel: kill feed and damage numbers](docs/media/screenshots/bots.png) |
+| ![Gridshot gameplay with the VK-4 Vanguard](docs/media/screenshots/gridshot.jpg) | ![Bot Duel: kill feed and damage numbers](docs/media/screenshots/bots.jpg) |
 | **Sniper scope** | **Smooth Tracking** |
-| ![LR-50 Longbow 4.5x scope in Reflex Flick](docs/media/screenshots/sniper-scope.png) | ![Tracking mode with the K-7 Hornet SMG](docs/media/screenshots/tracking.png) |
+| ![LR-50 Longbow 4.5x scope in Reflex Flick](docs/media/screenshots/sniper-scope.jpg) | ![Tracking mode with the K-7 Hornet SMG](docs/media/screenshots/tracking.jpg) |
 
 | Balisong inspect | Karambit inspect | Bowie inspect |
 | :---: | :---: | :---: |
-| ![Butterfly knife inspect](docs/media/screenshots/knife-butterfly.png) | ![Karambit ring spin](docs/media/screenshots/knife-karambit.png) | ![Bowie blade roll](docs/media/screenshots/knife-bowie.png) |
+| ![Butterfly knife inspect](docs/media/screenshots/knife-butterfly.jpg) | ![Karambit ring spin](docs/media/screenshots/knife-karambit.jpg) | ![Bowie blade roll](docs/media/screenshots/knife-bowie.jpg) |
 
 | Loading | Results | Settings | Career |
 | :---: | :---: | :---: | :---: |
-| ![Loading screen](docs/media/screenshots/loading.png) | ![Results screen](docs/media/screenshots/results.png) | ![Settings](docs/media/screenshots/settings.png) | ![Career stats](docs/media/screenshots/career.png) |
+| ![Loading screen](docs/media/screenshots/loading.jpg) | ![Results screen](docs/media/screenshots/results.jpg) | ![Settings](docs/media/screenshots/settings.jpg) | ![Career stats](docs/media/screenshots/career.jpg) |
 
 ---
 
@@ -155,4 +175,4 @@ docs/media/       trailer (MP4 + subtitles + GIF) and screenshots
 
 - Built with [three.js](https://threejs.org) (MIT, vendored).
 - UI fonts: [Oxanium](https://fonts.google.com/specimen/Oxanium) and [Rajdhani](https://fonts.google.com/specimen/Rajdhani) (SIL OFL) via Google Fonts.
-- The trailer soundtrack is an original piece, synthesized in code for this project. The trailer was rendered frame by frame from the actual game.
+- The trailer soundtrack is an original piece, synthesized with numpy for this project. The trailer was rendered frame by frame from the actual game in headless Chromium, then encoded with ffmpeg; subtitles are set in Oxanium.
