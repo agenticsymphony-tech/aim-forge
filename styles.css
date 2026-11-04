@@ -36,6 +36,23 @@ kbd { display: inline-block; min-width: 1.6em; padding: 0 .35em; border: 1px sol
 /* ------------------------------------------------------------------ loading */
 #loading { display: grid; place-items: center; background: #05070a; transition: opacity .6s; z-index: 50; cursor: pointer; }
 #loading.fade-out { opacity: 0; pointer-events: none; }
+
+/* loader: red, glowing — scoped so the operator accent never repaints it */
+#loading { --accent: #ff2b3d; --glow: 0 0 6px rgba(255, 43, 61, .9), 0 0 18px rgba(255, 43, 61, .65), 0 0 42px rgba(255, 43, 61, .35); }
+#loading .logo { color: #ff8a94; text-shadow: var(--glow); animation: glowPulse 2.4s ease-in-out infinite; }
+#loading .logo b { color: var(--accent); }
+#loading .logo-mark { box-shadow: 0 0 12px rgba(255, 43, 61, .8), inset 0 0 10px rgba(255, 43, 61, .6); }
+#loading .logo-mark::before, #loading .logo-mark::after { box-shadow: 0 0 10px var(--accent); }
+#loading .load-tag { color: #ff6b76; text-shadow: 0 0 10px rgba(255, 43, 61, .6); }
+.load-by { font-family: var(--display); font-weight: 700; font-size: 15px; letter-spacing: .55em; color: #ff6b76; text-shadow: var(--glow); margin-top: -6px; }
+.load-by b { color: var(--accent); font-weight: 800; font-size: 1.25em; letter-spacing: .4em; }
+#loading .load-bar { background: rgba(255, 43, 61, .12); box-shadow: 0 0 14px rgba(255, 43, 61, .25); }
+#loading #load-bar-fill { box-shadow: 0 0 12px var(--accent), 0 0 30px var(--accent); }
+#loading .load-row { color: #ff6b76; text-shadow: 0 0 8px rgba(255, 43, 61, .55); }
+#loading .load-enter { text-shadow: var(--glow); }
+#loading .load-tip { color: #d98a90; }
+#loading .load-tip b { text-shadow: var(--glow); }
+@keyframes glowPulse { 50% { text-shadow: 0 0 8px rgba(255, 43, 61, 1), 0 0 26px rgba(255, 43, 61, .8), 0 0 60px rgba(255, 43, 61, .5); } }
 .load-bg { position: absolute; inset: 0; background:
   radial-gradient(ellipse at 50% 120%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 60%),
   repeating-linear-gradient(90deg, rgba(255,255,255,.025) 0 1px, transparent 1px 80px),
