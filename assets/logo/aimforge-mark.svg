@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="AIMFORGE">
+  <title>AIMFORGE</title>
+  <defs>
+    <linearGradient id="af-edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff7a45"/>
+      <stop offset=".45" stop-color="#ff2b3d"/>
+      <stop offset="1" stop-color="#b30f2a"/>
+    </linearGradient>
+    <linearGradient id="af-hot" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd2a1"/>
+      <stop offset=".5" stop-color="#ff5a3a"/>
+      <stop offset="1" stop-color="#ff2b3d"/>
+    </linearGradient>
+    <radialGradient id="af-bg" cx=".5" cy=".42" r=".62">
+      <stop offset="0" stop-color="#2a0d14"/>
+      <stop offset=".6" stop-color="#11080c"/>
+      <stop offset="1" stop-color="#07080c"/>
+    </radialGradient>
+    <radialGradient id="af-core" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".45" stop-color="#ffe3c2"/>
+      <stop offset="1" stop-color="#ff5a3a" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="af-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="7" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- badge -->
+  <path d="M256 22 L458.6 139 L458.6 373 L256 490 L53.4 373 L53.4 139 Z" fill="url(#af-bg)" stroke="url(#af-edge)" stroke-width="16" stroke-linejoin="round"/>
+  <path d="M256 62 L424 159 L424 353 L256 450 L88 353 L88 159 Z" fill="none" stroke="#ff2b3d" stroke-opacity=".22" stroke-width="3" stroke-linejoin="round"/>
+  <!-- corner notches -->
+  <g stroke="#ff2b3d" stroke-opacity=".55" stroke-width="5" stroke-linecap="round">
+    <path d="M256 74 v18"/><path d="M256 420 v18"/>
+  </g>
+  <g filter="url(#af-glow)">
+    <!-- reticle ring with gaps at the cardinal points -->
+    <circle cx="256" cy="262" r="122" fill="none" stroke="url(#af-edge)" stroke-width="18"
+            stroke-dasharray="161.6 30" stroke-dashoffset="176.6"/>
+    <!-- ticks -->
+    <g stroke="#ff6a3d" stroke-width="13" stroke-linecap="round">
+      <path d="M256 118 v44"/><path d="M256 362 v44"/>
+      <path d="M112 262 h44"/><path d="M356 262 h44"/>
+    </g>
+    <!-- sight chevron (the "A" of AIM) -->
+    <path d="M256 186 L318 314 L290 314 L256 242 L222 314 L194 314 Z" fill="url(#af-hot)"/>
+    <path d="M232 292 h48" stroke="#ff2b3d" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <!-- white-hot core -->
+  <circle cx="256" cy="262" r="30" fill="url(#af-core)"/>
+  <circle cx="256" cy="262" r="7.5" fill="#fff"/>
+  <!-- forge sparks -->
+  <g fill="#ffb36b">
+    <path d="M372 120 l7 12 l-7 12 l-7 -12 z"/>
+    <path d="M398 158 l5 8 l-5 8 l-5 -8 z" opacity=".8"/>
+    <path d="M352 96 l4 7 l-4 7 l-4 -7 z" opacity=".65"/>
+  </g>
+</svg>

@@ -137,8 +137,18 @@ export function buildWorld(scene, { accent = '#ff3b3b', quality = 'high' } = {})
   const backTrim = box(W, 0.1, 0.06, neon, 0, H + 2.4, ARENA.minZ + 0.02, group); backTrim.castShadow = false; trims.push(backTrim);
 
   // back wall branding
-  const logo = textPlane('AIMFORGE', { w: 22, h: 4, color: '#f3f5f8', glow: accent, font: '900 300px "Oxanium", "Rajdhani", sans-serif' });
+  const logo = textPlane('AIMFORGE', { w: 22, h: 4, color: '#f3f5f8', glow: accent, font: '800 168px "Oxanium", "Rajdhani", sans-serif' });
   logo.position.set(0, 6.4, ARENA.minZ + 0.03); group.add(logo);
+  // brand badge either side of the wordmark
+  const markTex = new THREE.TextureLoader().load('assets/logo/aimforge-mark.svg');
+  markTex.colorSpace = THREE.SRGBColorSpace;
+  markTex.anisotropy = 8;
+  const markMat = new THREE.MeshBasicMaterial({ map: markTex, transparent: true, depthWrite: false, toneMapped: false });
+  for (const x of [-14.4, 14.4]) {
+    const badge = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 4.2), markMat);
+    badge.position.set(x, 6.2, ARENA.minZ + 0.04);
+    group.add(badge);
+  }
   const sub = textPlane('TRAINING FACILITY  ·  RANGE 01', { w: 14, h: 1, color: accent, font: '600 70px "Oxanium", "Rajdhani", sans-serif' });
   sub.position.set(0, 4.1, ARENA.minZ + 0.03); group.add(sub);
 

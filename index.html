@@ -3,8 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AIMFORGE — 3D Aim Trainer</title>
-  <meta name="description" content="A first-person 3D aim trainer with real weapons, operators and training modes.">
+  <title>AIMFORGE: 3D Aim Trainer by Apurva</title>
+  <meta name="description" content="AIMFORGE by Apurva: a first-person 3D aim trainer in your browser. 5 guns, 5 animated knives, 4 operators and 5 training modes.">
+  <meta name="author" content="Apurva Mukherjee">
+  <meta name="theme-color" content="#ff2b3d">
+  <meta name="color-scheme" content="dark">
+  <!-- icons -->
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" href="assets/icons/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <!-- link previews (Open Graph / Twitter) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AIMFORGE">
+  <meta property="og:title" content="AIMFORGE: 3D Aim Trainer by Apurva">
+  <meta property="og:description" content="First-person 3D aim trainer in your browser. 5 guns, 5 animated knives, 4 operators, 5 training modes.">
+  <meta property="og:url" content="https://apurvamukherjee.github.io/Aim-Trainer-Game/">
+  <meta property="og:image" content="https://apurvamukherjee.github.io/Aim-Trainer-Game/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="AIMFORGE logo: a red hexagonal badge with a reticle and an A-shaped sight">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AIMFORGE: 3D Aim Trainer by Apurva">
+  <meta name="twitter:description" content="First-person 3D aim trainer in your browser. 5 guns, 5 animated knives, 4 operators, 5 training modes.">
+  <meta name="twitter:image" content="https://apurvamukherjee.github.io/Aim-Trainer-Game/assets/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -18,7 +41,7 @@
   <div id="loading" class="screen">
     <div class="load-bg"></div>
     <div class="load-inner">
-      <div class="logo big"><span class="logo-mark"></span><span>AIM<b>FORGE</b></span></div>
+      <div class="logo big"><img class="logo-mark" src="assets/logo/aimforge-mark.svg" alt="" width="512" height="512"><span>AIM<b>FORGE</b></span></div>
       <div class="load-tag">FIRST-PERSON TACTICAL AIM TRAINING</div>
       <div class="load-by">BY <b>APURVA</b></div>
       <div class="load-bar"><div id="load-bar-fill"></div></div>
@@ -32,7 +55,7 @@
   <!-- ============================ MAIN MENU ============================ -->
   <div id="menu" class="screen hidden">
     <header class="topbar">
-      <div class="logo"><span class="logo-mark"></span><span>AIM<b>FORGE</b></span></div>
+      <div class="logo"><img class="logo-mark" src="assets/logo/aimforge-mark.svg" alt="" width="512" height="512"><span>AIM<b>FORGE</b></span></div>
       <nav class="tabs" id="tabs">
         <button data-tab="play" class="active">Play</button>
         <button data-tab="loadout">Loadout</button>

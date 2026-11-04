@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- simplified mark for favicons: bold shapes that stay legible at 16px -->
+  <defs>
+    <linearGradient id="e" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7a45"/><stop offset=".5" stop-color="#ff2b3d"/><stop offset="1" stop-color="#c8102e"/></linearGradient>
+  </defs>
+  <path d="M32 2.5 L57.5 17.25 L57.5 46.75 L32 61.5 L6.5 46.75 L6.5 17.25 Z" fill="#0d0a0e" stroke="url(#e)" stroke-width="4" stroke-linejoin="round"/>
+  <circle cx="32" cy="33" r="15" fill="none" stroke="url(#e)" stroke-width="4" stroke-dasharray="19.6 4" stroke-dashoffset="21.6"/>
+  <path d="M32 21 L41 39 L36.5 39 L32 30 L27.5 39 L23 39 Z" fill="#ff5a3a"/>
+  <circle cx="32" cy="33" r="2.6" fill="#fff"/>
+</svg>

@@ -1,14 +1,17 @@
 <div align="center">
 
-# 🎯 AIMFORGE
+<img src="docs/media/banner.png" alt="AIMFORGE: first-person 3D aim trainer, by Apurva" width="100%">
 
-**A first-person 3D aim trainer that runs in your browser.**
-Five guns, five animated knives, four operators, five training modes. Every model, texture and sound is generated in code: no asset downloads, no install.
+# AIMFORGE
+
+**A first-person 3D aim trainer that runs in your browser. By Apurva.**
+Five guns, five animated knives, four operators, five training modes. Every model, texture and sound is generated in code, and there is nothing to install.
 
 [**⬇ Download (.zip)**](https://github.com/apurvamukherjee/Aim-Trainer-Game/archive/refs/heads/main.zip) &nbsp;·&nbsp;
 [**▶ Watch the trailer**](#trailer) &nbsp;·&nbsp;
 [Run it locally](#run-it) &nbsp;·&nbsp;
-[Controls](#controls)
+[Controls](#controls) &nbsp;·&nbsp;
+[▶ Play online](https://apurvamukherjee.github.io/Aim-Trainer-Game/)
 
 <a href="docs/media/aimforge-trailer.mp4"><img src="docs/media/aimforge-trailer.gif" alt="AIMFORGE trailer: gameplay highlights" width="720"></a>
 
@@ -168,11 +171,30 @@ js/ui.js          menu tabs, loadout, operator, settings, career, pause, results
 js/audio.js       synthesized WebAudio sound effects
 js/storage.js     saved profile (settings, loadout, bests, history)
 vendor/           three.js r160 (MIT)
-docs/media/       trailer (MP4 + subtitles + GIF) and screenshots
+docs/media/       trailer (MP4 + subtitles + GIF), screenshots, README banner
+assets/           logo (SVG), icons, link-preview image
+favicon.svg/.ico  tab icons; site.webmanifest for install / home screen
 ```
+
+## Logo and brand assets
+
+<img src="assets/logo/aimforge-mark.svg" alt="AIMFORGE mark" width="120" align="right">
+
+The mark is a red hexagonal badge holding a gapped reticle, an **A**-shaped sight chevron with a white-hot core, and forge sparks. It appears on the loading screen, in the menu bar, as the browser-tab icon, as the home-screen and app icon, in link previews, and on the arena's back wall.
+
+| File | Use |
+| --- | --- |
+| [`assets/logo/aimforge-mark.svg`](assets/logo/aimforge-mark.svg) | Full mark (vector, any size) |
+| [`assets/logo/aimforge-icon.svg`](assets/logo/aimforge-icon.svg), [`favicon.svg`](favicon.svg) | Simplified mark that stays legible at 16 px |
+| [`favicon.ico`](favicon.ico), `assets/icons/favicon-{16,32,48}.png` | Tab icon fallbacks |
+| [`assets/icons/apple-touch-icon.png`](assets/icons/apple-touch-icon.png) | iOS home screen (180 px) |
+| `assets/icons/icon-{192,512}.png`, `icon-maskable-512.png` | Web-app manifest ([`site.webmanifest`](site.webmanifest)) |
+| [`assets/og-image.png`](assets/og-image.png) | Link-preview card (1200×630, Open Graph and Twitter) |
+| [`docs/media/banner.png`](docs/media/banner.png) | README banner |
 
 ## Credits
 
+- Created by **Apurva Mukherjee**.
 - Built with [three.js](https://threejs.org) (MIT, vendored).
 - UI fonts: [Oxanium](https://fonts.google.com/specimen/Oxanium) and [Rajdhani](https://fonts.google.com/specimen/Rajdhani) (SIL OFL) via Google Fonts.
 - The trailer soundtrack is an original piece, synthesized with numpy for this project. The trailer was rendered frame by frame from the actual game in headless Chromium, then encoded with ffmpeg; subtitles are set in Oxanium.
