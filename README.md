@@ -1,23 +1,18 @@
-<div align="center">
+# AIMFORGE
+
+A free aim trainer for FPS players that runs in your browser, with nothing to install. **[▶ Play online](https://apurvamukherjee.github.io/aim-forge/)**
+
+```bash
+git clone https://github.com/apurvamukherjee/aim-forge && cd aim-forge && python3 -m http.server 8000
+```
+
+![Demo: a few seconds of Gridshot](docs/media/demo.gif)
+
+[![CI](https://github.com/apurvamukherjee/aim-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/apurvamukherjee/aim-forge/actions/workflows/ci.yml) · [Trailer](#trailer) · [Run it](#run-it) · [Controls](#controls) · [Contributing](CONTRIBUTING.md) · [MIT License](LICENSE)
 
 <img src="docs/media/banner.png" alt="AIMFORGE: first-person 3D aim trainer, by Apurva" width="100%">
 
-# AIMFORGE
-
-**A first-person 3D aim trainer that runs in your browser. By Apurva.**
-Five guns, five animated knives, four operators, five training modes and **six themed maps**. Every model, texture and sound is generated in code, and there is nothing to install.
-
-[**⬇ Download (.zip)**](https://github.com/apurvamukherjee/aim-forge/archive/refs/heads/main.zip) &nbsp;·&nbsp;
-[**▶ Watch the trailer**](#trailer) &nbsp;·&nbsp;
-[Run it locally](#run-it) &nbsp;·&nbsp;
-[Controls](#controls) &nbsp;·&nbsp;
-[▶ Play online](https://apurvamukherjee.github.io/aim-forge/)
-
-<a href="docs/media/aimforge-trailer.mp4"><img src="docs/media/aimforge-trailer.gif" alt="AIMFORGE trailer: gameplay highlights" width="720"></a>
-
-<sub>The GIF is a short silent preview. The <a href="docs/media/aimforge-trailer.mp4">full trailer</a> has its original soundtrack and subtitles (burned in, plus a selectable English track and <a href="docs/media/aimforge-trailer.srt">.srt</a>).</sub>
-
-</div>
+Five guns, five animated knives, four operators, five training modes and **six themed maps**. Every model, texture and sound is generated in code. The full 66-second [trailer](docs/media/aimforge-trailer.mp4) has its original soundtrack and subtitles (burned in, plus a selectable English track and [.srt](docs/media/aimforge-trailer.srt)).
 
 ---
 
