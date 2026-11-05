@@ -113,6 +113,7 @@ kbd { display: inline-block; min-width: 1.6em; padding: 0 .35em; border: 1px sol
 .seg button:hover { color: var(--text); }
 .seg button.active { background: var(--accent); color: #05070a; }
 .dbl-hint { margin: -6px 0 10px; font-size: 12px; opacity: .55; letter-spacing: .06em; }
+.num-in { width: 72px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.15); color: inherit; font: inherit; padding: 4px 6px; text-align: right; }
 .seg.disabled { opacity: .35; pointer-events: none; }
 
 .deploy-row { display: flex; align-items: stretch; gap: 14px; margin-top: 8px; }

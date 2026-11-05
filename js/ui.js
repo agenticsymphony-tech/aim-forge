@@ -270,7 +270,7 @@ export class Menu {
   // ------------------------------------------------------------ settings
   settingsSchema() {
     return [
-      { k: 'sens', label: 'Sensitivity', type: 'range', min: 0.1, max: 6, step: 0.01, fmt: v => v.toFixed(2), hint: v => `${(2.54 * 360 / (v * 0.022 * 800)).toFixed(1)} cm/360 @ 800 DPI` },
+      { k: 'sens', label: 'Sensitivity', type: 'range', exact: true, min: 0.1, max: 6, step: 0.01, fmt: v => v.toFixed(2), hint: v => `${(2.54 * 360 / (v * 0.022 * 800)).toFixed(1)} cm/360 @ 800 DPI` },
       { k: 'adsMult', label: 'ADS sensitivity ×', type: 'range', min: 0.3, max: 2, step: 0.01, fmt: v => v.toFixed(2) },
       { k: 'fov', label: 'Field of view (horizontal)', type: 'range', min: 80, max: 120, step: 1, fmt: v => `${v}°` },
       { k: 'volume', label: 'Master volume', type: 'range', min: 0, max: 1, step: 0.01, fmt: v => `${Math.round(v * 100)}%` },
@@ -310,8 +310,16 @@ export class Menu {
         input = h('input'); Object.assign(input, { type: 'range', min: f.min, max: f.max, step: f.step, value: S[f.k] });
         const upd = () => { val.textContent = f.fmt(+input.value); if (f.hint) lab.dataset.hint = f.hint(+input.value); };
         upd();
-        input.addEventListener('input', () => { S[f.k] = +input.value; upd(); this.applySettings(); });
-        row.append(input, val);
+        input.addEventListener('input', () => { S[f.k] = +input.value; upd(); if (num) num.value = input.value; this.applySettings(); });
+        let num = null;
+        if (f.exact) {
+          num = h('input', 'num-in'); Object.assign(num, { type: 'number', min: f.min, max: f.max, step: f.step, value: S[f.k] });
+          num.addEventListener('change', () => {
+            const v = Math.min(f.max, Math.max(f.min, +num.value || S[f.k]));
+            num.value = input.value = S[f.k] = v; upd(); this.applySettings();
+          });
+        }
+        row.append(input, num ?? val);
       } else if (f.type === 'select') {
         input = h('select', 'sel');
         for (const [v, l] of f.options) { const o = h('option', '', l); o.value = v; if (S[f.k] === v) o.selected = true; input.appendChild(o); }
