@@ -122,6 +122,7 @@ kbd { display: inline-block; min-width: 1.6em; padding: 0 .35em; border: 1px sol
 .btn-primary { padding: 14px 40px; background: var(--accent); color: #05070a; font-family: var(--display); font-weight: 800; font-size: 20px; letter-spacing: .18em; text-transform: uppercase; clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px)); transition: filter .15s, transform .1s; box-shadow: 0 0 30px color-mix(in srgb, var(--accent) 40%, transparent); }
 .btn-primary:hover { filter: brightness(1.15); }
 .btn-primary:active { transform: translateY(1px); }
+.btn-primary small { font-size: .6em; letter-spacing: .1em; opacity: .75; }
 .btn-primary span { font-size: .8em; margin-left: 6px; }
 .btn-primary kbd { border-color: rgba(0,0,0,.35); color: #05070a; background: rgba(0,0,0,.08); margin-left: 8px; font-size: .6em; vertical-align: middle; }
 .btn-ghost { padding: 12px 22px; border: 1px solid var(--line-2); font-family: var(--display); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; font-size: 14px; background: rgba(255,255,255,.02); transition: background .15s, border-color .15s; }

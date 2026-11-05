@@ -127,6 +127,7 @@ export class Menu {
     for (const b of $('seg-diff').children) b.classList.toggle('active', b.dataset.v === s.difficulty);
     for (const b of $('seg-dur').children) b.classList.toggle('active', +b.dataset.v === s.duration);
     const timed = MODES[s.mode].timed;
+    $('play-mode').textContent = ` · ${MODES[s.mode].name}`;
     $('seg-dur').classList.toggle('disabled', !timed);
     const best = this.p.best[`${s.mode}:${s.difficulty}:${s.duration}`];
     $('pb-val').innerHTML = !timed ? '<span class="muted">Untimed</span>' : best ? `${best.score.toLocaleString()} <small>${best.acc}% acc</small>` : '<span class="muted">No record yet</span>';
