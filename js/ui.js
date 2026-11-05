@@ -387,6 +387,9 @@ export class Menu {
     $('res-mode').textContent = `${r.mode.name} · ${r.diff.label} · ${r.map}${r.timed ? '' : ' · Free'}`;
     $('res-score').textContent = r.score.toLocaleString();
     $('res-best').classList.toggle('hidden', !r.isBest);
+    const d = r.score - r.prevBest;
+    $('res-delta').textContent = r.timed && r.prevBest ? `${d >= 0 ? '+' : '−'}${Math.abs(d).toLocaleString()} vs PB` : '';
+    $('res-delta').classList.toggle('up', d >= 0);
     const rows = [
       ['Accuracy', r.acc.toFixed(1) + '%'],
       ['Hits / shots', `${r.hits} / ${r.shots}`],

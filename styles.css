@@ -314,6 +314,8 @@ input[type=color] { width: 56px; height: 30px; border: 1px solid var(--line-2); 
 .res-head .label { margin: 0; color: var(--accent); }
 .res-best { font-family: var(--display); font-weight: 800; letter-spacing: .2em; font-size: 13px; color: #05070a; background: var(--gold); padding: 6px 12px; animation: blink 1s infinite; }
 .res-score { font-family: var(--display); font-weight: 800; font-size: 76px; line-height: 1; display: flex; align-items: baseline; gap: 14px; }
+.res-delta { font-style: normal; font-size: 18px; letter-spacing: .08em; color: #ff5a5a; }
+.res-delta.up { color: #9cff57; }
 .res-score small { font-size: 14px; letter-spacing: .3em; color: var(--muted); }
 .res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 
