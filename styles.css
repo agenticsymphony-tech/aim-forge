@@ -112,6 +112,7 @@ kbd { display: inline-block; min-width: 1.6em; padding: 0 .35em; border: 1px sol
 .seg button + button { border-left: 1px solid var(--line); }
 .seg button:hover { color: var(--text); }
 .seg button.active { background: var(--accent); color: #05070a; }
+.dbl-hint { margin: -6px 0 10px; font-size: 12px; opacity: .55; letter-spacing: .06em; }
 .seg.disabled { opacity: .35; pointer-events: none; }
 
 .deploy-row { display: flex; align-items: stretch; gap: 14px; margin-top: 8px; }
