@@ -267,6 +267,8 @@ class Game {
         this.resume();
       } else if (this.state === 'results' && (k === 'Enter' || k === 'KeyR')) {
         this.startRun();
+      } else if (this.state === 'results' && k === 'Escape') {
+        this.toMenu();
       }
     });
     window.addEventListener('keyup', (e) => this.input.keys.delete(e.code));
