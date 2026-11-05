@@ -158,6 +158,10 @@ export class Menu {
         c.addEventListener('mouseenter', () => { if (this.detailId !== id) { this.detailId = id; this.renderDetail(); this.g.setShowcase(id); } });
         grid.appendChild(c);
       }
+      grid.addEventListener('mouseleave', () => {
+        const id = this.p.loadout[slot];
+        if (this.detailId !== id) { this.detailId = id; this.renderDetail(); this.g.setShowcase(id); }
+      });
     };
     make($('primary-grid'), PRIMARIES, 'primary');
     make($('secondary-grid'), SECONDARIES, 'secondary');
