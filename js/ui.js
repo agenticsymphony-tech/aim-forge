@@ -129,6 +129,7 @@ export class Menu {
     const timed = MODES[s.mode].timed;
     $('play-mode').textContent = ` · ${MODES[s.mode].name}`;
     $('seg-dur').classList.toggle('disabled', !timed);
+    $('dur-untimed').classList.toggle('hidden', timed);
     const best = this.p.best[`${s.mode}:${s.difficulty}:${s.duration}`];
     $('pb-val').innerHTML = !timed ? '<span class="muted">Untimed</span>' : best ? `${best.score.toLocaleString()} <small>${best.acc}% acc</small>` : '<span class="muted">No record yet</span>';
     const L = this.p.loadout;
