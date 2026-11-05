@@ -265,6 +265,10 @@ class Game {
         this.startRun();
       } else if (this.state === 'paused' && k === 'Escape') {
         this.resume();
+      } else if (this.state === 'paused' && k === 'KeyR') {
+        this.startRun();
+      } else if (this.state === 'paused' && k === 'KeyQ') {
+        this.toMenu();
       } else if (this.state === 'results' && (k === 'Enter' || k === 'KeyR')) {
         this.startRun();
       } else if (this.state === 'results' && k === 'Escape') {
