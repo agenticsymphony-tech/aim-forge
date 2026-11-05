@@ -261,6 +261,8 @@ class Game {
         if (k === 'KeyQ') this.switchWeapon(this.lastSlot && this.lastSlot !== this.slot ? this.lastSlot : (this.slot === 'primary' ? 'secondary' : 'primary'));
         if (k === 'KeyF') this.startInspect();
         if (k === 'Escape' && !this.locked) this.pause();
+      } else if (this.state === 'menu' && k === 'Enter' && e.target.tagName !== 'BUTTON') {
+        this.startRun();
       } else if (this.state === 'paused' && k === 'Escape') {
         this.resume();
       } else if (this.state === 'results' && (k === 'Enter' || k === 'KeyR')) {
